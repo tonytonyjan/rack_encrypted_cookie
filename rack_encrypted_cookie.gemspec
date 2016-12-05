@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Jian Weihang']
   s.email       = 'tonytonyjan@gmail.com'
   s.files       = ['lib/rack/session/encrypted_cookie.rb']
+  s.required_ruby_version = '>= 2.3.0'
   s.add_runtime_dependency 'rack'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rubocop'
