@@ -50,7 +50,7 @@ describe Rack::Session::EncryptedCookie do
                options[:cookie]['Set-Cookie']
              else
                options[:cookie]
-    end
+             end
     request_options['HTTP_COOKIE'] = cookie || ''
     app_with_cookie = Rack::Session::EncryptedCookie.new(*options[:app])
     app_with_cookie = Rack::Lint.new(app_with_cookie)
@@ -443,13 +443,14 @@ describe Rack::Session::EncryptedCookie do
       end
 
       def decode(str)
+        # rubocop:disable Lint/Eval
         eval(str) if str
       end
     end.new
-    _app = [app, { secret: 'test', coder: unsafe_coder }]
-    response = response_for(app: _app)
+    app_args = [app, { secret: 'test', coder: unsafe_coder }]
+    response = response_for(app: app_args)
     response.body.must_equal '1--'
-    response = response_for(app: _app, cookie: response)
+    response = response_for(app: app_args, cookie: response)
     response.body.must_equal '1--2--'
   end
 end

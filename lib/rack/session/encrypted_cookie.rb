@@ -5,7 +5,7 @@ require 'base64'
 
 module Rack
   module Session
-    class EncryptedCookie < Cookie
+    class EncryptedCookie < Cookie #:nodoc:
       def initialize(app, options = {})
         super
         @salt = options.fetch(:salt, 'encrypted cookie')
@@ -13,8 +13,8 @@ module Rack
         @iterations = options.fetch(:iterations, 1024)
         @key_size = options.fetch(:key_size, 64)
         @cipher = OpenSSL::Cipher::Cipher.new(options.fetch(:cipher, 'AES-256-CBC'))
-        @cipher_secrets = @secrets.map{ |secret| generate_key(secret, @salt) }
-        @secrets.map!{ |secret| generate_key(secret, @signed_salt) }
+        @cipher_secrets = @secrets.map { |secret| generate_key(secret, @salt) }
+        @secrets.map! { |secret| generate_key(secret, @signed_salt) }
       end
 
       private
@@ -41,6 +41,7 @@ module Rack
                 session_data = @cipher.update(encrypted_data) << @cipher.final
                 break
               rescue OpenSSL::Cipher::CipherError
+                next
               end
             end
           end

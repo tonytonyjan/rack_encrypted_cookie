@@ -11,7 +11,7 @@ RuboCop::RakeTask.new
 
 Rake::TestTask.new do |t|
   t.test_files = FileList['test/spec*.rb']
-  t.verbose = true
+  # t.verbose = true
 end
 
 spec_path = File.expand_path('../rack_encrypted_cookie.gemspec', __FILE__)

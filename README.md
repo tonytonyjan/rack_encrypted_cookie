@@ -50,5 +50,4 @@ In `Rack::Session::Cookie`, the `:secret` option is used for signing, while `Rac
 
 # TODO
 
-- Rubocop
 - Support AEAD cipher like 'aes-256-gcm'
