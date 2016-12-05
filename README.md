@@ -8,7 +8,26 @@ gem install rack_encrypted_cookie
 
 # Usage
 
-In your project, replace `Rack::Session::Cookie` with `Rack::Session::EncryptedCookie`, and it will just work. `Rack::Session::EncryptedCookie` is **FULLY COMPATIBLE** with `Rack::Session::Cookie`, as well as its options.
+In your project, replace `Rack::Session::Cookie` with `Rack::Session::EncryptedCookie`, and it will just work. `Rack::Session::EncryptedCookie` is **FULLY COMPATIBLE** with `Rack::Session::Cookie`, as well as its options (`:key`, `:domain`, `:path`, `:coder`, `:hmac`, etc).
+
+# Minimal Example
+
+```ruby
+require 'rack/session/encrypted_cookie'
+
+app = lambda do |env|
+  session = env['rack.session']
+  session[:count] ||= 0
+  session[:count] += 1
+  [200, {}, [session[:count].to_s]]
+end
+
+app = Rack::Builder.app(app) do
+  use Rack::Session::EncryptedCookie, secret: 'secret_key_base'
+end
+
+Rack::Handler::WEBrick.run app
+```
 
 # Options
 
@@ -19,6 +38,12 @@ option         | default
 `:iterations`  | `1024`
 `:key_size`    | `64`
 `:cipher`      | `'AES-256-CBC'`
+
+A list of supported algorithms can be obtained by
+
+```ruby
+puts OpenSSL::Cipher.ciphers
+```
 
 # How it works
 
