@@ -8,7 +8,7 @@ gem install rack_encrypted_cookie
 
 # Usage
 
-In your project, replace `Rack::Session::Cookie` with `Rack::Session::EncryptedCookie`, and it will just work, `Rack::Session::EncryptedCookie` is **FULLY COMPATIBLE** with `Rack::Session::Cookie` including options.
+In your project, replace `Rack::Session::Cookie` with `Rack::Session::EncryptedCookie`, and it will just work. `Rack::Session::EncryptedCookie` is **FULLY COMPATIBLE** with `Rack::Session::Cookie`, as well as its options.
 
 # Options
 
