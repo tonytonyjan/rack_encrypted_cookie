@@ -1,4 +1,4 @@
-# Rack::Session::EncryptedCookie
+# Rack::Session::EncryptedCookie [![Build Status](https://travis-ci.org/tonytonyjan/rack_encrypted_cookie.svg?branch=master)](https://travis-ci.org/tonytonyjan/rack_encrypted_cookie)
 
 # Installation
 
