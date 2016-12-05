@@ -452,20 +452,4 @@ describe Rack::Session::EncryptedCookie do
     response = response_for(app: _app, cookie: response)
     response.body.must_equal '1--2--'
   end
-
-  it 'encrypts cookie' do
-    app = [incrementor, { secret_key_base: 'test' }]
-
-    response = response_for(app: app)
-    response = response_for(app: app, cookie: response)
-    response.body.must_equal '{"counter"=>2}'
-
-    response = response_for(app: app, cookie: response)
-    response.body.must_equal '{"counter"=>3}'
-
-    app = [incrementor, { secret_key_base: 'other' }]
-
-    response = response_for(app: app, cookie: response)
-    response.body.must_equal '{"counter"=>1}'
-  end
 end

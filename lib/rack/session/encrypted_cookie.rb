@@ -7,16 +7,14 @@ module Rack
   module Session
     class EncryptedCookie < Cookie
       def initialize(app, options = {})
-        @secret_key_base = options.fetch(:secret_key_base)
+        super
         @salt = options.fetch(:salt, 'encrypted cookie')
         @signed_salt = options.fetch(:signed_salt, 'signed encrypted cookie')
         @iterations = options.fetch(:iterations, 1024)
         @key_size = options.fetch(:key_size, 64)
         @cipher = OpenSSL::Cipher::Cipher.new(options.fetch(:cipher, 'AES-256-CBC'))
-        @cipher_secret = @secret_key_base ? generate_key(@salt) : nil
-        @sign_secret = @secret_key_base ? generate_key(@signed_salt) : nil
-        options[:secret] = @sign_secret if @secret_key_base
-        super
+        @cipher_secrets = @secrets.map{ |secret| generate_key(secret, @salt) }
+        @secrets.map!{ |secret| generate_key(secret, @signed_salt) }
       end
 
       private
@@ -31,15 +29,21 @@ module Rack
             session_data&.reverse!
             session_data = nil unless digest_match?(session_data, digest)
           end
-          if @cipher_secret && session_data
-            encrypted_data, iv = ::Base64.strict_decode64(session_data)
-                                         .split('--').map! { |v| ::Base64.strict_decode64(v) }
-            @cipher.decrypt
-            @cipher.key = @cipher_secret
-            @cipher.iv  = iv
-            session_data = @cipher.update(encrypted_data) << @cipher.final
-          end
 
+          if !@cipher_secrets.empty? && session_data
+            encrypted_data, iv = ::Base64.strict_decode64(session_data).split('--').map! { |v| ::Base64.strict_decode64(v) }
+
+            @cipher_secrets.each do |cipher_secret|
+              @cipher.decrypt
+              @cipher.key = cipher_secret
+              @cipher.iv  = iv
+              begin
+                session_data = @cipher.update(encrypted_data) << @cipher.final
+                break
+              rescue OpenSSL::Cipher::CipherError
+              end
+            end
+          end
           request.set_header(k, coder.decode(session_data) || {})
         end
       end
@@ -48,9 +52,9 @@ module Rack
         session = session.merge('session_id' => session_id)
         session_data = coder.encode(session)
 
-        if @cipher_secret
+        if @cipher_secrets.first
           @cipher.encrypt
-          @cipher.key = @cipher_secret
+          @cipher.key = @cipher_secrets.first
           iv = @cipher.random_iv
           encrypted_data = @cipher.update(session_data) << @cipher.final
           blob = "#{::Base64.strict_encode64 encrypted_data}--#{::Base64.strict_encode64 iv}"
@@ -69,8 +73,8 @@ module Rack
         end
       end
 
-      def generate_key(salt)
-        OpenSSL::PKCS5.pbkdf2_hmac_sha1(@secret_key_base, salt, @iterations, @key_size)
+      def generate_key(secret, salt)
+        OpenSSL::PKCS5.pbkdf2_hmac_sha1(secret, salt, @iterations, @key_size)
       end
     end
   end
