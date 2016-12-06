@@ -8,7 +8,7 @@ gem install rack_encrypted_cookie
 
 # Usage
 
-In your project, replace `Rack::Session::Cookie` with `Rack::Session::EncryptedCookie`, and it will just work. `Rack::Session::EncryptedCookie` is **FULLY COMPATIBLE** with `Rack::Session::Cookie`, as well as its options (`:key`, `:domain`, `:path`, `:coder`, `:hmac`, etc).
+In your project, replace `Rack::Session::Cookie` with `Rack::Session::EncryptedCookie`, and it will just work. `Rack::Session::EncryptedCookie` is **FULLY COMPATIBLE** with `Rack::Session::Cookie`, even accepts all options.
 
 # Minimal Example
 
@@ -54,13 +54,15 @@ In `Rack::Session::Cookie`, the `:secret` option is used for signing, while `Rac
 ## `Rack::Session::EncryptedCookie`
 
 ```
-+--------------------- uri encode --------------------+
-| +------------- base64 ------------+      +-- hex -+ |
-| | +-- base64 -+      +- base64 -+ |      |        | |
-| | |  marshal  | "--" |    iv    | | "--" |  hmac  | |
-| | +-----------+      +----------+ |      |        | |
-| +---------------------------------+      +--------+ |
-+-----------------------------------------------------+
++-------------------------- uri encode -------------------------+
+| +----------------------- base64 ------------+      +-- hex -+ |
+| | +------- base64 ------+      +- base64 -+ |      |        | |
+| | | +-- AES-256-CBC --+ |      |          | |      |        | |
+| | | |     marshal     | | "--" |    iv    | | "--" |  hmac  | |
+| | | +-----------------+ |      |          | |      |        | |
+| | +---------------------+      +----------+ |      |        | |
+| +-------------------------------------------+      +--------+ |
++---------------------------------------------------------------+
 ```
 
 ## `Rack::Session::Cookie`
