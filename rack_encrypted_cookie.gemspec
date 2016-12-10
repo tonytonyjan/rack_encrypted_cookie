@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/tonytonyjan/rack_encrypted_cookie'
   s.required_ruby_version = '>= 2.3.0'
   s.add_runtime_dependency 'rack'
+  s.add_runtime_dependency 'coder_decorator', '>= 1.0.2'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rake'
