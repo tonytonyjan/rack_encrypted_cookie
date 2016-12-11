@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 Gem::Specification.new do |s|
   s.name = 'rack_encrypted_cookie'
-  s.version = '0.1.1'
+  s.version = '1.0.0'
   s.licenses = ['MIT']
   s.summary = 'Rack middleware for signed encrypted session cookie.'
   s.description = "Rack middleware for signed encrypted session cookie. It's fully compatible with Rack::Session::Cookie, not only safe but also easy to use"
