@@ -36,7 +36,7 @@ option         | default
 `:salt`        | `'encrypted cookie'`
 `:signed_salt` | `'signed encrypted cookie'`
 `:iterations`  | `1024`
-`:key_size`    | `64`
+`:key_size`    | `32`
 `:cipher`      | `'AES-256-CBC'`
 
 A list of supported algorithms can be obtained by

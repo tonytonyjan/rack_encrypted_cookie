@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require 'rubocop/rake_task'
 require 'rake/testtask'
 require 'rake/packagetask'
 require 'rubygems/package_task'
 
 desc 'Run linter and tests'
-task default: %i(rubocop test)
+task default: %i[rubocop test]
 
 RuboCop::RakeTask.new
 
@@ -14,11 +15,10 @@ Rake::TestTask.new do |t|
   # t.verbose = true
 end
 
-spec_path = File.expand_path('../rack_encrypted_cookie.gemspec', __FILE__)
+spec_path = File.expand_path('rack_encrypted_cookie.gemspec', __dir__)
 spec = Gem::Specification.load(spec_path)
 package_task = Gem::PackageTask.new(spec)
 package_task.define
-
 
 desc 'Release to rubygems.org'
 task release: :package do

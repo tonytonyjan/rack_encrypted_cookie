@@ -12,7 +12,7 @@ module Rack
         @secret_key_bases = options.values_at(:secret, :old_secret).compact
         return super if @secret_key_bases.empty?
         @iterations = options.fetch(:iterations, 1024)
-        @key_size = options.fetch(:key_size, 64)
+        @key_size = options.fetch(:key_size, 32)
         cipher = options.fetch(:cipher, 'AES-256-CBC')
         digest = options.fetch(:digest, 'SHA1')
         salt = options.fetch(:salt, 'encrypted cookie')

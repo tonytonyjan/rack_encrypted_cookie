@@ -443,8 +443,9 @@ describe Rack::Session::EncryptedCookie do
       end
 
       def decode(str)
-        # rubocop:disable Lint/Eval
+        # rubocop:disable Security/Eval
         eval(str) if str
+        # rubocop:enable Security/Eval
       end
     end.new
     app_args = [app, { secret: 'test', coder: unsafe_coder }]
